@@ -82,7 +82,7 @@ function updateDecorations(editor: vscode.TextEditor) {
 
         const relatedLink = linkIndices.find(link => link.id === linkStyle.id);
         if (relatedLink) {
-            const colorMatch = linkStyle.line.match(/stroke:(#[0-9A-Fa-f]{6})/);
+            const colorMatch = RegExp(/stroke:(#[0-9A-Fa-f]{6})/).exec(linkStyle.line);
             const color = colorMatch ? colorMatch[1] : 'gray';
 
             const decoration = {
@@ -121,9 +121,9 @@ function getLinkIndices(text: string): LinkIndex[] {
     let linkIndex = 0;
     const linkIndices: LinkIndex[] = [];
 
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const match = line.match(/(-->|---)/);
+    for (const element of lines) {
+        const line = element;
+        const match = RegExp(/(-->|---)/).exec(line);
         if (match) {
             linkIndices.push({
                 index: text.indexOf(line),
@@ -142,9 +142,9 @@ function getLinkStyles(text: string): LinkStyle[] {
     const lines = text.split('\n');
     const linkStyles: LinkStyle[] = [];
 
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const match = line.match(/linkStyle (\d+)/);
+    for (const element of lines) {
+        const line = element;
+        const match = RegExp(/linkStyle (\d+)/).exec(line);
         if (match) {
             linkStyles.push({
                 index: text.indexOf(line),
