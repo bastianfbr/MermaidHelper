@@ -1,11 +1,8 @@
 import * as vscode from 'vscode';
 
-let idDecorationType: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({});
+let idDecorationType: vscode.TextEditorDecorationType;
 
 export function activate(context: vscode.ExtensionContext) {
-    if (idDecorationType) {
-        idDecorationType.dispose();
-    }
     idDecorationType = vscode.window.createTextEditorDecorationType({
         after: {
             margin: '0 0 0 1em',
@@ -34,6 +31,13 @@ export function activate(context: vscode.ExtensionContext) {
 
         vscode.workspace.onDidChangeTextDocument(event => {
             const editor = vscode.window.visibleTextEditors.find(e => e.document === event.document);
+            if (editor) {
+                updateDecorations(editor);
+            }
+        }),
+
+        vscode.commands.registerCommand('extension.annotateMermaid', () => {
+            const editor = vscode.window.activeTextEditor;
             if (editor) {
                 updateDecorations(editor);
             }
@@ -82,7 +86,7 @@ function updateDecorations(editor: vscode.TextEditor) {
 
         const relatedLink = linkIndices.find(link => link.id === linkStyle.id);
         if (relatedLink) {
-            const colorMatch = RegExp(/stroke:(#[0-9A-Fa-f]{6})/).exec(linkStyle.line);
+            const colorMatch = /stroke:(#[0-9A-Fa-f]{6})/.exec(linkStyle.line);
             const color = colorMatch ? colorMatch[1] : 'gray';
 
             const decoration = {
@@ -121,9 +125,8 @@ function getLinkIndices(text: string): LinkIndex[] {
     let linkIndex = 0;
     const linkIndices: LinkIndex[] = [];
 
-    for (const element of lines) {
-        const line = element;
-        const match = RegExp(/(-->|---)/).exec(line);
+    for (const line of lines) {
+        const match = /(-->|---)/.exec(line);
         if (match) {
             linkIndices.push({
                 index: text.indexOf(line),
@@ -142,9 +145,8 @@ function getLinkStyles(text: string): LinkStyle[] {
     const lines = text.split('\n');
     const linkStyles: LinkStyle[] = [];
 
-    for (const element of lines) {
-        const line = element;
-        const match = RegExp(/linkStyle (\d+)/).exec(line);
+    for (const line of lines) {
+        const match = /linkStyle (\d+)/.exec(line);
         if (match) {
             linkStyles.push({
                 index: text.indexOf(line),
