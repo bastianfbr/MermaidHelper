@@ -12,29 +12,33 @@ export function activate(context: vscode.ExtensionContext) {
             fontWeight: 'bold'
         }
     });
-
+    
     const updateActiveEditorDecorations = () => {
         const editor = vscode.window.activeTextEditor;
-        if (editor) {
+        if (editor && isMermaidFile(editor.document)) {
             updateDecorations(editor);
         }
     };
 
-    if (vscode.window.activeTextEditor) {
+    if (vscode.window.activeTextEditor && isMermaidFile(vscode.window.activeTextEditor.document)) {
         updateActiveEditorDecorations();
     }
 
     context.subscriptions.push(
-        vscode.window.onDidChangeActiveTextEditor(updateActiveEditorDecorations),
+        vscode.window.onDidChangeActiveTextEditor(editor => {
+            if (editor && isMermaidFile(editor.document)) {
+                updateDecorations(editor);
+            }
+        }),
         vscode.workspace.onDidOpenTextDocument(document => {
             const editor = vscode.window.visibleTextEditors.find(e => e.document === document);
-            if (editor) {
+            if (editor && isMermaidFile(editor.document)) {
                 updateDecorations(editor);
             }
         }),
         vscode.workspace.onDidChangeTextDocument(event => {
             const editor = vscode.window.visibleTextEditors.find(e => e.document === event.document);
-            if (editor) {
+            if (editor && isMermaidFile(editor.document)) {
                 updateDecorations(editor);
             }
         }),
@@ -58,4 +62,8 @@ function updateDecorations(editor: vscode.TextEditor) {
     const decorations = createDecorationOptions(linkIndices, linkStyles, document);
 
     editor.setDecorations(idDecorationType, decorations);
+}
+
+function isMermaidFile(document: vscode.TextDocument): boolean {
+    return document.languageId === 'mermaid' || document.languageId === 'mmd';
 }
