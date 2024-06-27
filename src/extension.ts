@@ -1,78 +1,106 @@
 import * as vscode from 'vscode';
 
+let idDecorationType: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({});
+
 export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('extension.annotateMermaid', () => {
-        const editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            return;
+    if (idDecorationType) {
+        idDecorationType.dispose();
+    }
+    idDecorationType = vscode.window.createTextEditorDecorationType({
+        after: {
+            margin: '0 0 0 1em',
+            color: 'white',
+            fontWeight: 'bold'
         }
+    });
 
-        const document = editor.document;
-        const text = document.getText();
+    if (vscode.window.activeTextEditor) {
+        updateDecorations(vscode.window.activeTextEditor);
+    }
 
-        const linkIndices = getLinkIndices(text);
-        const linkStyles = getLinkStyles(text);
-
-        const idDecorationType = vscode.window.createTextEditorDecorationType({
-            after: {
-                margin: '0 0 0 1em',
-                color: 'white',
-                fontWeight: 'bold'
+    context.subscriptions.push(
+        vscode.window.onDidChangeActiveTextEditor(editor => {
+            if (editor) {
+                updateDecorations(editor);
             }
-        });
+        }),
 
-        const decorations: vscode.DecorationOptions[] = [];
+        vscode.workspace.onDidOpenTextDocument(document => {
+            const editor = vscode.window.visibleTextEditors.find(e => e.document === document);
+            if (editor) {
+                updateDecorations(editor);
+            }
+        }),
 
-        // Add link ID decorations
-        for (const linkIndex of linkIndices) {
-            const startPos = document.positionAt(linkIndex.index);
-            const endPos = document.positionAt(linkIndex.index + linkIndex.length);
-            const range = new vscode.Range(startPos, endPos);
+        vscode.workspace.onDidChangeTextDocument(event => {
+            const editor = vscode.window.visibleTextEditors.find(e => e.document === event.document);
+            if (editor) {
+                updateDecorations(editor);
+            }
+        })
+    );
+}
+
+export function deactivate() {
+    if (idDecorationType) {
+        idDecorationType.dispose();
+    }
+}
+
+function updateDecorations(editor: vscode.TextEditor) {
+    const document = editor.document;
+    const text = document.getText();
+
+    const linkIndices = getLinkIndices(text);
+    const linkStyles = getLinkStyles(text);
+
+    const decorations: vscode.DecorationOptions[] = [];
+
+    // Add link ID decorations
+    for (const linkIndex of linkIndices) {
+        const startPos = document.positionAt(linkIndex.index);
+        const endPos = document.positionAt(linkIndex.index + linkIndex.length);
+        const range = new vscode.Range(startPos, endPos);
+
+        const decoration = {
+            range: range,
+            renderOptions: {
+                after: {
+                    contentText: `ID: ${linkIndex.id}`
+                }
+            }
+        };
+
+        decorations.push(decoration);
+    }
+
+    // Add linkStyle decorations with color coding
+    for (const linkStyle of linkStyles) {
+        const startPos = document.positionAt(linkStyle.index);
+        const endPos = document.positionAt(linkStyle.index + linkStyle.length);
+        const range = new vscode.Range(startPos, endPos);
+
+        const relatedLink = linkIndices.find(link => link.id === linkStyle.id);
+        if (relatedLink) {
+            const colorMatch = linkStyle.line.match(/stroke:(#[0-9A-Fa-f]{6})/);
+            const color = colorMatch ? colorMatch[1] : 'gray';
 
             const decoration = {
                 range: range,
                 renderOptions: {
                     after: {
-                        contentText: `ID: ${linkIndex.id}`
+                        contentText: `Relation: ${relatedLink.line}`,
+                        color: color
                     }
                 }
             };
 
             decorations.push(decoration);
         }
+    }
 
-        // Add linkStyle decorations with color coding
-        for (const linkStyle of linkStyles) {
-            const startPos = document.positionAt(linkStyle.index);
-            const endPos = document.positionAt(linkStyle.index + linkStyle.length);
-            const range = new vscode.Range(startPos, endPos);
-
-            const relatedLink = linkIndices.find(link => link.id === linkStyle.id);
-            if (relatedLink) {
-                const colorMatch = linkStyle.line.match(/stroke:(#[0-9A-Fa-f]{6})/);
-                const color = colorMatch ? colorMatch[1] : 'gray';
-
-                const decoration = {
-                    range: range,
-                    renderOptions: {
-                        after: {
-                            contentText: `Relation: ${relatedLink.line}`,
-                            color: color
-                        }
-                    }
-                };
-
-                decorations.push(decoration);
-            }
-        }
-
-        editor.setDecorations(idDecorationType, decorations);
-    });
-
-    context.subscriptions.push(disposable);
+    editor.setDecorations(idDecorationType, decorations);
 }
-
-export function deactivate() {}
 
 interface LinkIndex {
     index: number;
