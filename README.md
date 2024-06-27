@@ -1,71 +1,21 @@
-# mermaidhelper README
+# 🪄 MermaidHelper: Elevate Your Mermaid Diagram Creation in VS Code
 
-This is the README for your extension "mermaidhelper". After writing up a brief description, we recommend including the following sections.
+> MermaidHelper is a VS Code extension that makes your Mermaid diagrams even more amazing! ✨ With this extension, you can easily read and customize complex diagrams with features like link ID annotations and color-coded relation annotations.
 
-## Features
+## Key Features 🎯
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Link ID Annotations**: See link IDs right next to each connection, making it easy to find and personalize specific links in your diagram. 🔗
+- **Color-coded Relation Annotations**: Get visual cues with relation labels and matching link colors displayed next to linkStyle directives. This helps you quickly see which styles are applied to which links. 🎨
 
-For example if there is an image subfolder under your extension project workspace:
+## Installation Guide 📥
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Open VS Code.
+2. Go to the Extensions view (click the Extensions icon or press Ctrl+Shift+X).
+3. Search for "MermaidHelper".
+4. Click "Install".
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## How to Use 🚀
 
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+1. Open your Mermaid diagram file in VS Code.
+2. Run the "Annotate Mermaid" command from the Command Palette (Ctrl+Shift+P).
+3. Enjoy the automatic annotations for link IDs and color-coded relations! 🎉
