@@ -6,8 +6,14 @@ export function getLinkIndices(text: string): LinkIndex[] {
     let linkIndex = 0;
     const linkIndices: LinkIndex[] = [];
 
+    const linkPattern = /(?:\w+)\s*(-->|---)\s*(?:\w+)/;
+
     for (const line of lines) {
-        const match = /(-->|---)/.exec(line);
+        if (line.trim().startsWith('---') || line.trim().startsWith('title:')) {
+            continue;
+        }
+
+        const match = linkPattern.exec(line);
         if (match) {
             linkIndices.push({
                 index: text.indexOf(line),
