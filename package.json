@@ -3,7 +3,7 @@
   "displayName": "MermaidHelper",
   "description": "",
   "publisher": "bastianfbr",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/bastianfbr/MermaidHelper"
@@ -14,7 +14,10 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:mermaid",
+    "onLanguage:mmd"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
