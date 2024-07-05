@@ -5,11 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## Unreleased - 2024-06-27
+## Unreleased - 2024-07-05
 
 ### Added
 
 - ✨ Enable extension only in Mermaid files (.mmd/.mermaid) [(f6ff099)](https://github.com/bastianfbr/MermaidHelper/commit/f6ff099354d8a2874e3aee4aa2ed7de1f6b7226b)
+
+### Fixed
+
+- 🐛 Fix titles handled as links [(b2b7a47)](https://github.com/bastianfbr/MermaidHelper/commit/b2b7a4725466b42bb6ab9166a600c2978a60f62e)
 
 ## 0.0.3 - 2024-06-27
 
